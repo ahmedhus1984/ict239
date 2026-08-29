@@ -1,6 +1,5 @@
-#python venv
+__pycache__/
 venv/
 env/
 ENV/
 .venv/
-
