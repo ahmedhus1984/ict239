@@ -1,6 +1,6 @@
 from models.users import User
 from models.package import Package
-from app import db
+from __init__ import db
 from mongoengine.queryset.visitor import Q
 
 class Booking(db.Document):

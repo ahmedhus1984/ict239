@@ -2,7 +2,7 @@
 
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, jsonify, url_for, redirect
-from app import app, db #, login_manager
+from __init__ import app, db #, login_manager
 
 from werkzeug.security import generate_password_hash
 
