@@ -1,30 +1,33 @@
-$(document).ready(function () {
-    // debugger
+document.addEventListener('DOMContentLoaded', function () {
     const matches = document.getElementsByClassName("avatarButton");
-    // console.log(matches.length)
 
     for (let i = 0; i < matches.length; i++) {
 
         matches[i].addEventListener('click', function () {
-            //debugger
             console.log("Inside");
-            console.log(document.getElementById("img" + matches[i].id).src);
+            const imgSrc = document.getElementById("img" + matches[i].id).src;
+            console.log(imgSrc);
 
-            $.ajax({
-                type: 'POST',
-                url: '/chooseAvatar',
-                contentType: "application/json",
-                data: JSON.stringify({ path: document.getElementById("img" + matches[i].id).src }),
-                error: function () {
-                    alert("Error");
-                },
-                success: function (data, status, xhr) {
+            fetch('/chooseAvatar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: imgSrc })
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Request failed');
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
                     console.log(data['path']);
                     console.log('Success!');
 
-                    $("#userAvatar").attr('src', data['path']);
-                }
-            });
+                    document.getElementById('userAvatar').src = data['path'];
+                })
+                .catch(function () {
+                    alert("Error");
+                });
         });
     };
 });

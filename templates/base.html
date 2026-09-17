@@ -5,11 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="title icon" href="{{ url_for('static', filename='img/title-img.png')}}">
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-    integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
     integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
@@ -24,7 +23,7 @@
 
   <!-- navbar -->
   <nav class="navbar navbar-expand-md navbar-light">
-    <button class="navbar-toggler ml-auto mb-2 bg-light" type="button" data-toggle="collapse" data-target="#myNavbar">
+    <button class="navbar-toggler ms-auto mb-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="myNavbar">
@@ -37,13 +36,13 @@
             {% if current_user.is_authenticated %}
             <div class="bottom-border pb-3">
               {% if current_user.email == "admin@abc.com" %}
-              <img src="{{ url_for('static', filename='img/admin.jpeg')}}" width="50" class="rounded-circle mr-3">
+              <img src="{{ url_for('static', filename='img/admin.jpeg')}}" width="50" class="rounded-circle me-3">
               {% elif current_user.avatar == "" %}
               <img src="{{ url_for('static', filename='img/avatar/default-min.jpg')}}" width="50"
-                class="rounded-circle mr-3" id="userAvatar">
+                class="rounded-circle me-3" id="userAvatar">
               {% else %}
               <img src="{{ url_for('static', filename='img/avatar/' + current_user.avatar)}}" width="50"
-                class="rounded-circle mr-3" id="userAvatar">
+                class="rounded-circle me-3" id="userAvatar">
               {% endif %}
               <a href="#" class="text-white">{{ current_user.name }} </a>
             </div>
@@ -51,25 +50,25 @@
             <ul class="navbar-nav flex-column mt-4">
               {% if not current_user.is_authenticated %}
               <li class="nav-item"><a href="/login" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-home text-light fa-lg mr-3"></i>Login</a></li>
+                    class="fas fa-home text-light fa-lg me-3"></i>Login</a></li>
               <li class="nav-item"><a href="/register" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-user text-light fa-lg mr-3"></i>Register</a></li>
+                    class="fas fa-user text-light fa-lg me-3"></i>Register</a></li>
               {% endif %}
               <li class="nav-item"><a href="/packages" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-address-card text-light fa-lg mr-3"></i>Packages</a></li>
+                    class="fas fa-address-card text-light fa-lg me-3"></i>Packages</a></li>
 
               {% if current_user.email == "admin@abc.com" %}
               <li class="nav-item"><a href="/trend_chart" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-chart-area text-light fa-lg mr-3"></i>Dashboard</a></li>
+                    class="fas fa-chart-area text-light fa-lg me-3"></i>Dashboard</a></li>
               <li class="nav-item"><a href="/upload" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-cloud-upload-alt text-light fa-lg mr-3"></i>Upload</a></li>
+                    class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
 
               {% else %}
               {% if current_user.is_authenticated %}
               <li class="nav-item"><a href="/manageBooking" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-calendar text-light fa-lg mr-3"></i>Manage Booking</a></li>
+                    class="fas fa-calendar text-light fa-lg me-3"></i>Manage Booking</a></li>
               <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-smile text-light fa-lg mr-3"></i>Change Avatar</a></li>
+                    class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
               {% endif %}
               {% endif %}
 
@@ -78,7 +77,7 @@
           <!-- end of sidebar -->
 
           <!-- top-nav -->
-          <div class="col-xl-10 col-lg-9 col-md-8 ml-auto bg-info fixed-top py-2 top-navbar">
+          <div class="col-xl-10 col-lg-9 col-md-8 ms-auto bg-info fixed-top py-2 top-navbar">
             <div class="row align-items-center">
               <div class="col-md-4">
                 <h4 class="text-light text-uppercase mb-0">{{ panel }}</h4>
@@ -87,8 +86,8 @@
               {% if current_user.is_authenticated %}
               <div class="col-md-8">
                 <ul class="navbar-nav">
-                  <li class="nav-item ml-auto"><a href="#" class="nav-link" data-toggle="modal"
-                      data-target="#sign-out"><i class="fas fa-sign-out-alt fa-lg"></i></a></li>
+                  <li class="nav-item ms-auto"><a href="#" class="nav-link" data-bs-toggle="modal"
+                      data-bs-target="#sign-out"><i class="fas fa-sign-out-alt fa-lg"></i></a></li>
                 </ul>
               </div>
               {% endif %}
@@ -107,14 +106,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Want to leave?</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           Press logout to leave
         </div>
         <div class="modal-footer">
           <form action='/logout' method='GET'>
-            <button type="button" class="btn btn-success" data-dismiss="modal">Stay Here</button>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Stay Here</button>
             <button type="submit" class="btn btn-danger" id="logout">Logout</button>
           </form>
         </div>
@@ -127,8 +126,8 @@
   <section>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-xl-10 col-lg-9 col-md-8 ml-auto">
-          <div class="row pt-md-5 ml-md-3 mt-md-3 mb-5">
+        <div class="col-xl-10 col-lg-9 col-md-8 ms-auto">
+          <div class="row pt-md-5 ms-md-3 mt-md-3 mb-5">
             <!-- <div class="col-xl-4 col-sm-4 p-2">
                     <div class="card card-common"> -->
             {% block mainblock %}
