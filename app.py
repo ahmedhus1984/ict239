@@ -12,9 +12,9 @@ from werkzeug.security import generate_password_hash
 from controllers.dashboard import dashboard
 from controllers.auth import auth
 from controllers.bookController import booking
-from controllers.packageController import package
+from controllers.productController import product
 
-from models.package import Package
+from models.product import Product
 from models.book import Booking
 from models.users import User
 from models.forms import BookForm
@@ -30,7 +30,7 @@ import os
 app.register_blueprint(dashboard)
 app.register_blueprint(auth)
 app.register_blueprint(booking)
-app.register_blueprint(package)
+app.register_blueprint(product)
 
 @app.template_filter('formatdate') # use this name
 def format_date(value, format="%#d/%m/%Y"):
@@ -71,11 +71,17 @@ def upload():
                 for item in list(dict_reader):
                     pwd = generate_password_hash(item['password'], method='sha256')
                     User.createUser(email=item['email'], password=pwd, name=item['name'])
-            elif datatype == "Package":
+            elif datatype == "Product":
                 for item in list(dict_reader):
-                    Package.createPackage(hotel_name=item['hotel_name'], duration=int(item['duration']),
-                        unit_cost=float(item['unit_cost']), image_url=item['image_url'],
-                        description=item['description'])
+                    Product.createProduct(
+                      name=item['name'],
+                      category=item['category'],
+                      special_price=float(item['special_price']),
+                      usual_price=float(item['usual_price']),
+                      stock_qty=int(item['stock_qty']),
+                      image_url=item['image_url'],
+                      description=item['description']
+                      )
             elif datatype == "Booking":
                 for item in list(dict_reader):
                     existing_user = User.getUser(email=item['customer'])

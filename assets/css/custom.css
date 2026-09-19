@@ -144,3 +144,34 @@ tr {
 }
 
 /* end of cards */
+
+
+/* --- Sidebar overflow fixes --- */
+.sidebar .nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar .navbar-brand {
+    font-size: 1.1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* --- Category dropdown in sidebar --- */
+.sidebar select.form-select {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.9rem;
+    padding: 0.5rem 1.75rem 0.5rem 0.75rem;
+    background-color: #fff;
+    border: none;
+    border-radius: 6px;
+    color: #333;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

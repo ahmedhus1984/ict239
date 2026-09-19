@@ -1,0 +1,27 @@
+{% from "_render_field.html" import render_field %}
+{% extends "base.html" %}
+{% block mainblock %}
+
+<div class="col-xl-4 col-sm-6 p-2">
+  <div class="card card-common h-100">
+    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+      <img src="{{ product.image_url }}" class="img-fluid" />
+      <a href="#!">
+        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+      </a>
+    </div>
+    <div class="card-body">
+      <small class="text-muted">{{ product.category }}</small>
+      <h5 class="card-title">{{ product.name }}</h5>
+      <p class="card-text">{{ product.description }}</p>
+      <p class="card-text"><strong>Stock:</strong> {{ product.stock_qty }}</p>
+      <p class="card-text">
+        <strong class="text-danger">Special: ${{ "%.2f"|format(product.special_price) }}</strong><br>
+        <small class="text-muted">Usual: <s>${{ "%.2f"|format(product.usual_price) }}</s></small>
+      </p>
+      <a href="/products" class="btn btn-primary">Back to Products</a>
+      <a href="/view?name={{ product.name }}" class="btn btn-primary">Add to Cart</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

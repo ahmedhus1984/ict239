@@ -31,7 +31,7 @@
         <div class="row">
           <!-- sidebar -->
           <div class="col-xl-2 col-lg-3 col-md-4 sidebar fixed-top">
-            <a href="#" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">Staycation
+            <a href="#" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">Supermarket 
               Portal</a>
             {% if current_user.is_authenticated %}
             <div class="bottom-border pb-3">
@@ -47,32 +47,36 @@
               <a href="#" class="text-white">{{ current_user.name }} </a>
             </div>
             {% endif %}
-            <ul class="navbar-nav flex-column mt-4">
-              {% if not current_user.is_authenticated %}
-              <li class="nav-item"><a href="/login" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-home text-light fa-lg me-3"></i>Login</a></li>
-              <li class="nav-item"><a href="/register" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-user text-light fa-lg me-3"></i>Register</a></li>
-              {% endif %}
-              <li class="nav-item"><a href="/packages" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-address-card text-light fa-lg me-3"></i>Packages</a></li>
+              <ul class="navbar-nav flex-column mt-4">
+                <!-- Products (visible to everyone) -->
+                <li class="nav-item"><a href="/products" class="nav-link text-white py-3 px-2  mb-2 sidebar-link"><i
+                      class="fas fa-store text-light fa-lg me-3"></i>Products</a></li>
 
-              {% if current_user.email == "admin@abc.com" %}
-              <li class="nav-item"><a href="/trend_chart" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-chart-area text-light fa-lg me-3"></i>Dashboard</a></li>
-              <li class="nav-item"><a href="/upload" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
+                <!-- Slot for the category dropdown (only pages that fill it will show it) -->
+                {% block sidebar_extra %}{% endblock %}
 
-              {% else %}
-              {% if current_user.is_authenticated %}
-              <li class="nav-item"><a href="/manageBooking" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-calendar text-light fa-lg me-3"></i>Manage Booking</a></li>
-              <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
-              {% endif %}
-              {% endif %}
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item"><a href="/login" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                      class="fas fa-home text-light fa-lg me-3"></i>Login</a></li>
+                <li class="nav-item"><a href="/register" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                      class="fas fa-user text-light fa-lg me-3"></i>Register</a></li>
+                {% endif %}
 
-            </ul>
+                {% if current_user.email == "admin@abc.com" %}
+                <li class="nav-item"><a href="/trend_chart" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                      class="fas fa-chart-area text-light fa-lg me-3"></i>Dashboard</a></li>
+                <li class="nav-item"><a href="/upload" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                      class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
+                {% else %}
+                  {% if current_user.is_authenticated %}
+                  <li class="nav-item"><a href="/manageBooking" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                        class="fas fa-calendar text-light fa-lg me-3"></i>Manage Booking</a></li>
+                  <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                        class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
+                  {% endif %}
+                {% endif %}
+
+              </ul>
           </div>
           <!-- end of sidebar -->
 
@@ -80,6 +84,15 @@
           <div class="col-xl-10 col-lg-9 col-md-8 ms-auto bg-info fixed-top py-2 top-navbar">
             <div class="row align-items-center">
               <div class="col-md-4">
+                  <h6 class="text-light text-uppercase mb-0">
+                    {% if current_user.is_authenticated and current_user.email == "admin@abc.com" %}
+                      {{ current_user.name }}'s Workspace
+                    {% elif current_user.is_authenticated %}
+                      {{ current_user.name }}
+                    {% else %}
+                      Guest
+                    {% endif %}
+                  </h6>
                 <h4 class="text-light text-uppercase mb-0">{{ panel }}</h4>
               </div>
 
@@ -130,6 +143,16 @@
           <div class="row pt-md-5 ms-md-3 mt-md-3 mb-5">
             <!-- <div class="col-xl-4 col-sm-4 p-2">
                     <div class="card card-common"> -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                          {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                              {{ message }}
+                              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                          {% endfor %}
+                        {% endif %}
+                      {% endwith %}
             {% block mainblock %}
             {% endblock %}
             <!-- </div>
