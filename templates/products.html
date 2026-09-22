@@ -36,7 +36,10 @@
     <p class="text-muted mb-0">Discover weekly essentials.</p>
   </div>
   <div>
-    <a href="/cart" class="btn btn-danger">Go to Cart</a>
+    {% if selected_category != "All Categories" %}
+    <a href="/products" class="btn btn-outline-danger rounded-pill me-2">Clear Category</a>
+    {% endif %}
+    <a href="/cart" class="btn btn-danger rounded-pill">Go to Cart</a>
   </div>
 </div>
 
@@ -57,8 +60,7 @@
         <strong class="text-danger">Special: ${{ "%.2f"|format(product.special_price) }}</strong><br>
         <small class="text-muted">Usual: <s>${{ "%.2f"|format(product.usual_price) }}</s></small>
       </p>
-      <a href="/viewProductDetail/{{ product.name }}" class="btn btn-primary btn-sm">Details</a>
-      <a href="/view?name={{ product.name }}" class="btn btn-primary btn-sm">Add to Cart</a>
+      <a href="/viewProductDetail/{{ product.id }}" class="btn btn-outline-danger btn-sm">View to Add to Cart</a>
     </div>
   </div>
 </div>

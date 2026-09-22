@@ -14,8 +14,11 @@ class Product(db.Document):
         return self.usual_price - self.special_price
 
     @staticmethod
-    def getProduct(name):
-        return Product.objects(name=name).first()
+    def getProduct(product_id):
+      try:
+        return Product.objects.get(id=product_id)
+      except Product.DoesNotExist:
+          return None
 
     @staticmethod
     def getAllProducts():
