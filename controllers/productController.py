@@ -28,7 +28,7 @@ def products():
 
 @product.route("/viewProductDetail/<product_id>")
 def viewProductDetail(product_id):
-    the_product = Product.getProduct(product_id=product_id)
+    the_product = Product.getProduct(product_id)
     return render_template('productDetail.html', panel="Product Detail", product=the_product)
 
 @product.route("/cart")
