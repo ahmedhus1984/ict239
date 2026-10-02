@@ -34,7 +34,7 @@
             <a href="#" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">Supermarket 
               Portal</a>
             {% if current_user.is_authenticated %}
-            <div class="bottom-border pb-3">
+            <div class="bottom-border pb-3 d-flex align-items-center">
               {% if current_user.email == "admin@abc.com" %}
               <img src="{{ url_for('static', filename='img/admin.jpeg')}}" width="50" class="rounded-circle me-3">
               {% elif current_user.avatar == "" %}
@@ -44,7 +44,13 @@
               <img src="{{ url_for('static', filename='img/avatar/' + current_user.avatar)}}" width="50"
                 class="rounded-circle me-3" id="userAvatar">
               {% endif %}
-              <a href="#" class="text-white">{{ current_user.name }} </a>
+              <div class="d-flex flex-column">
+                <span class="text-white">{{ current_user.name }}</span>
+                <span class="text-white">{{ current_user.email }}</span>
+                <span class="text-white">
+                  {% if current_user.email == "admin@abc.com" %}Admin Role{% else %}Customer Role{% endif %}
+                </span>
+              </div>
             </div>
             {% endif %}
               <ul class="navbar-nav flex-column mt-4">
@@ -70,7 +76,9 @@
                 {% else %}
                   {% if current_user.is_authenticated %}
                   <li class="nav-item"><a href="/manageBooking" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
-                        class="fas fa-calendar text-light fa-lg me-3"></i>Manage Booking</a></li>
+                        class="fas fa-calendar text-light fa-truck me-3"></i>Orders</a></li>
+                  <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
+                        class="fas fa-smile text-light fa-shopping-cart me-3"></i>Cart</a></li>
                   <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
                         class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
                   {% endif %}

@@ -23,7 +23,7 @@ class User(UserMixin, db.Document):
         user = User.getUser(email)
         if not user:
             user = User(email=email, name=name, password=password, avatar = "").save()
-        return user  
+        return user
 
     @staticmethod
     def addAvatar(user, filename):

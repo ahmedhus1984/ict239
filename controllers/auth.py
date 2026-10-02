@@ -20,8 +20,8 @@ def register():
                 User.createUser(email=form.email.data,password=hashpass, name=form.name.data)
                 return redirect(url_for('auth.login'))
             else:
-                form.email.errors.append("User already existed")
-                render_template('register.html', form=form, panel="Register")
+                # form.email.errors.append("User already existed")
+                flash("User already existed", "danger")
     return render_template('register.html', form=form, panel="Register")
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -36,15 +36,18 @@ def login():
                     login_user(check_user)
                     return redirect(url_for('productController.products'))     
                 else:
-                    form.password.errors.append("User Password Not Correct")
+                    # form.password.errors.append("User Password Not Correct")
+                    flash("User Password Not Correct", "danger")
             else:
-                form.email.errors.append("No Such User")
+                # form.email.errors.append("No Such User")
+                flash("No Such User", "danger")
     return render_template('login.html', form=form, panel="Login")
 
 @auth.route('/logout', methods = ['GET'])
 @login_required
 def logout():
     logout_user()
+    flash("You've been logged out.", "info")
     return redirect(url_for('productController.products'))
 
 # Load the current user if any

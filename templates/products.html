@@ -39,7 +39,10 @@
     {% if selected_category != "All Categories" %}
     <a href="/products" class="btn btn-outline-danger rounded-pill me-2">Clear Category</a>
     {% endif %}
+
+    {% if current_user.is_authenticated and current_user.email != "admin@abc.com" %}
     <a href="/cart" class="btn btn-danger rounded-pill">Go to Cart</a>
+    {% endif %}
   </div>
 </div>
 
