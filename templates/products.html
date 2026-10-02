@@ -63,7 +63,11 @@
         <strong class="text-danger">Special: ${{ "%.2f"|format(product.special_price) }}</strong><br>
         <small class="text-muted">Usual: <s>${{ "%.2f"|format(product.usual_price) }}</s></small>
       </p>
-      <a href="/viewProductDetail/{{ product.id }}" class="btn btn-outline-danger btn-sm">View to Add to Cart</a>
+      {% if current_user.is_authenticated and current_user.email != "admin@abc.com" %}
+        <a href="/viewProductDetail/{{ product.id }}" class="btn btn-outline-danger btn-sm">View to Add to Cart</a>
+        {% else %}
+        <a href="/viewProductDetail/{{ product.id }}" class="btn btn-outline-danger btn-sm">View Details</a>
+      {% endif %}
     </div>
   </div>
 </div>

@@ -19,17 +19,29 @@
         <strong class="text-danger">Special: ${{ "%.2f"|format(product.special_price) }}</strong><br>
         <small class="text-muted">Usual: <s>${{ "%.2f"|format(product.usual_price) }}</s></small>
       </p>
-      <div class="d-flex gap-2">
-        <a href="/products" class="btn btn-primary text-nowrap">Back to Products</a>
-
+      <div class="d-flex gap-2 align-items-center mb-2">
         {% if current_user.is_authenticated and current_user.email == "admin@abc.com" %}
           {# admin — no button #}
         {% elif current_user.is_authenticated %}
+          <input type="number" id="qtyInput" class="form-control" value="1" min="1" max="{{ product.stock_qty }}" style="width: 90px;">
           <a href="/view?name={{ product.name }}" class="btn btn-primary text-nowrap">Add to Cart</a>
         {% else %}
           <a href="/login" class="btn btn-primary text-nowrap">Login to Buy</a>
         {% endif %}
       </div>
+
+      <div>
+        <a href="/products" class="btn btn-primary text-nowrap">Back to Products</a>
+      </div>
+
+      <script>
+        function changeQty(delta) {
+          const input = document.getElementById('qtyInput');
+          let qty = parseInt(input.value, 10) + delta;
+          if (qty < 1) qty = 1;
+          input.value = qty;
+        }
+      </script>
     </div>
   </div>
 </div>

@@ -22,7 +22,7 @@
 
 
   <!-- navbar -->
-  <nav class="navbar navbar-expand-md navbar-light">
+  <nav class="navbar navbar-expand-md navbar-light p-0">
     <button class="navbar-toggler ms-auto mb-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,9 +44,9 @@
               <img src="{{ url_for('static', filename='img/avatar/' + current_user.avatar)}}" width="50"
                 class="rounded-circle me-3" id="userAvatar">
               {% endif %}
-              <div class="d-flex flex-column">
-                <span class="text-white">{{ current_user.name }}</span>
-                <span class="text-white">{{ current_user.email }}</span>
+              <div class="d-flex flex-column" style="min-width: 0;">
+                <span class="text-white" style="font-size: 0.9rem;">{{ current_user.name }}</span>
+                <span class="text-white" style="font-size: 0.75rem;">{{ current_user.email }}</span>
                 <span class="text-white">
                   {% if current_user.email == "admin@abc.com" %}Admin Role{% else %}Customer Role{% endif %}
                 </span>
