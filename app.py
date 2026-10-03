@@ -9,13 +9,13 @@ from werkzeug.security import generate_password_hash
 # Register Blueprint so we can factor routes
 # from bmi import bmi, get_dict_from_csv, insert_reading_data_into_database
 
-from controllers.dashboard import dashboard
+# from controllers.dashboard import dashboard
 from controllers.auth import auth
-from controllers.bookController import booking
+from controllers.cartController import cart
 from controllers.productController import product
+# from controllers.ordersController import orders   ← add later when built
 
 from models.product import Product
-from models.book import Booking
 from models.users import User
 from models.forms import BookForm
 
@@ -27,9 +27,9 @@ import datetime as dt
 import os
 
 # register blueprint from respective module
-app.register_blueprint(dashboard)
+# app.register_blueprint(dashboard)
 app.register_blueprint(auth)
-app.register_blueprint(booking)
+app.register_blueprint(cart)
 app.register_blueprint(product)
 
 @app.template_filter('formatdate') # use this name
@@ -82,14 +82,7 @@ def upload():
                       image_url=item['image_url'],
                       description=item['description']
                       )
-            elif datatype == "Booking":
-                for item in list(dict_reader):
-                    existing_user = User.getUser(email=item['customer'])
-                    existing_package = Package.getPackage(hotel_name=item['hotel_name'])
-                    check_in_date=dt.datetime.strptime(item['check_in_date'], "%Y-%m-%d")
-
-                    aBooking = Booking.createBooking(check_in_date=check_in_date, customer=existing_user, package=existing_package)
-                    aBooking.calculate_total_cost()
+            # Booking branch removed
                     
         return render_template("upload.html", panel="Upload")
     

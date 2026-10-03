@@ -1,6 +1,6 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, request, render_template
 from models.product import Product
+
 
 product = Blueprint('productController', __name__)
 
@@ -30,11 +30,3 @@ def products():
 def viewProductDetail(product_id):
     the_product = Product.getProduct(product_id)
     return render_template('productDetail.html', panel="Product Detail", product=the_product)
-
-@product.route("/cart")
-@login_required
-def cart():
-    if current_user.email == "admin@abc.com":
-        flash("Admins are not allowed to purchase items.", "warning")
-        return redirect(url_for('productController.products'))
-    return redirect(url_for('changeAvatar'))  # or wherever your cart page lives

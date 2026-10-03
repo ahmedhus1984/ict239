@@ -15,7 +15,7 @@
     crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css')}}">
-  <title>Admin Dashboard</title>
+  <title>Supermarket Portal</title>
 </head>
 
 <body>
@@ -69,16 +69,11 @@
                 {% endif %}
 
                 {% if current_user.email == "admin@abc.com" %}
-                <li class="nav-item"><a href="/trend_chart" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
-                      class="fas fa-chart-area text-light fa-lg me-3"></i>Dashboard</a></li>
                 <li class="nav-item"><a href="/upload" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
                       class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
                 {% else %}
                   {% if current_user.is_authenticated %}
-                  <li class="nav-item"><a href="/manageBooking" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
-                        class="fas fa-calendar text-light fa-truck me-3"></i>Orders</a></li>
-                  <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
-                        class="fas fa-smile text-light fa-shopping-cart me-3"></i>Cart</a></li>
+                  <li class="nav-item"><a href="/cart" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i class="fas fa-shopping-cart text-light fa-lg me-3"></i>Cart</a></li>
                   <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
                         class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
                   {% endif %}

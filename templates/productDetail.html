@@ -23,8 +23,11 @@
         {% if current_user.is_authenticated and current_user.email == "admin@abc.com" %}
           {# admin — no button #}
         {% elif current_user.is_authenticated %}
-          <input type="number" id="qtyInput" class="form-control" value="1" min="1" max="{{ product.stock_qty }}" style="width: 90px;">
-          <a href="/view?name={{ product.name }}" class="btn btn-primary text-nowrap">Add to Cart</a>
+        <form action="/cart/add" method="post" class="d-inline-flex gap-2 align-items-center">
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="number" name="qty" class="form-control" value="1" min="1" max="{{ product.stock_qty }}" style="width: 90px;">
+          <button type="submit" class="btn btn-primary text-nowrap">Add to Cart</button>
+        </form>
         {% else %}
           <a href="/login" class="btn btn-primary text-nowrap">Login to Buy</a>
         {% endif %}

@@ -11,11 +11,11 @@ from werkzeug.security import generate_password_hash
 
 from controllers.dashboard import dashboard
 from controllers.auth import auth
-from controllers.bookController import booking
+from controllers.cartController import booking
 from controllers.packageController import package
 
 from models.package import Package
-from models.book import Booking
+from models.cart import Booking
 from models.users import User
 from models.forms import BookForm
 
