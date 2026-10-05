@@ -1,58 +1,46 @@
-from models.users import User
-from models.package import Package
 from __init__ import db
-from mongoengine.queryset.visitor import Q
+from datetime import datetime
 
-class Booking(db.Document):
-    
-    meta = {'collection': 'booking'}
-    check_in_date = db.DateTimeField(required=True)
-    customer = db.ReferenceField(User)
-    package = db.ReferenceField(Package)
-    total_cost = db.FloatField()
-    
-    def calculate_total_cost(self):
-        self.total_cost = self.package.duration * self.package.unit_cost
-        self.save()
 
-    @staticmethod
-    def getBookingsByEmail(email):
-        customer = User.getUser(email)
-        if customer:
-            return Booking.objects(customer=customer)
-        return []
+class OrderItem(db.EmbeddedDocument):
+    product_name = db.StringField()
+    qty = db.IntField()
+    special_price = db.FloatField()
+    usual_price = db.FloatField()
+    image_url = db.StringField()
+
+
+class Order(db.Document):
+    meta = {'collection': 'orders'}
+    user = db.ReferenceField('User')
+    items = db.EmbeddedDocumentListField(OrderItem)
+    checkout_date = db.DateTimeField(default=datetime.utcnow)
+    total = db.FloatField(default=0)
 
     @staticmethod
-    def getAllBookings():
-        return Booking.objects()           
-            
-    @staticmethod
-    def createBooking(check_in_date, customer, package):
-        booking = Booking(check_in_date=check_in_date, customer=customer, package=package).save()
-        booking.calculate_total_cost()
-        return booking
-              
-    @staticmethod
-    def getUserBookingsFromDate(customer, from_date):
-        return Booking.objects(Q(customer = customer) & Q(check_in_date__gte = from_date))
-               
+    def createOrder(user, cart):
+        order_items = []
+        total = 0
+
+        for item in cart.items:
+            if not item.product:
+                continue
+            order_items.append(OrderItem(
+                product_name=item.product.name,
+                qty=item.qty,
+                special_price=item.product.special_price,
+                usual_price=item.product.usual_price,
+                image_url=item.product.image_url
+            ))
+            total += item.product.special_price * item.qty
+
+        order = Order(
+            user=user,
+            items=order_items,
+            total=total
+        ).save()
+        return order
 
     @staticmethod
-    def getBooking(check_in_date, customer, hotel_name):
-        package = Package.getPackage(hotel_name)
-        return Booking.objects(Q(customer = customer) & Q(check_in_date = check_in_date) & Q(package = package)).first()
-
-    @staticmethod
-    def updateBooking(old_check_in_date, new_check_in_date, customer, hotel_name):
-        booking = Booking.getBooking(old_check_in_date, customer, hotel_name)
-        if booking:
-            booking.check_in_date = new_check_in_date
-            return booking.save()
-            
-
-    @staticmethod
-    def deleteBooking(check_in_date, customer, hotel_name):
-        booking = Booking.getBooking(check_in_date, customer, hotel_name)
-        if booking:
-            booking.delete()
-        return booking
+    def getUserOrders(user):
+        return Order.objects(user=user).order_by('-checkout_date')

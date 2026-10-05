@@ -13,7 +13,8 @@ from werkzeug.security import generate_password_hash
 from controllers.auth import auth
 from controllers.cartController import cart
 from controllers.productController import product
-# from controllers.ordersController import orders   ← add later when built
+from controllers.ordersController import orders # add later when built
+
 
 from models.product import Product
 from models.users import User
@@ -31,6 +32,7 @@ import os
 app.register_blueprint(auth)
 app.register_blueprint(cart)
 app.register_blueprint(product)
+app.register_blueprint(orders)
 
 @app.template_filter('formatdate') # use this name
 def format_date(value, format="%#d/%m/%Y"):

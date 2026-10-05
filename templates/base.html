@@ -73,6 +73,7 @@
                       class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
                 {% else %}
                   {% if current_user.is_authenticated %}
+                  <li class="nav-item"><a href="/orders" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i class="fas fa-truck text-light fa-lg me-3"></i>Orders</a></li>
                   <li class="nav-item"><a href="/cart" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i class="fas fa-shopping-cart text-light fa-lg me-3"></i>Cart</a></li>
                   <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
                         class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
