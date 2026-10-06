@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 
 from models.cart import Cart
 from models.orders import Order
+from models.review import Review
+from models.product import Product
 
 orders = Blueprint('ordersController', __name__)
 
@@ -53,4 +55,41 @@ def orders_page():
         return redirect(url_for('productController.products'))
 
     user_orders = Order.getUserOrders(current_user)
-    return render_template('orders.html', panel="Your Orders", orders=user_orders)
+        # build a map: product_id -> existing review by this user
+    reviews_map = {}
+    for order in user_orders:
+        for item in order.items:
+            if item.product:
+                key = str(item.product.id)
+                if key not in reviews_map:
+                    reviews_map[key] = Review.getReview(current_user, item.product)
+
+    return render_template('orders.html', panel="Your Orders",
+                           orders=user_orders, reviews_map=reviews_map)
+
+
+@orders.route('/orders/review', methods=['POST'])
+@login_required
+def submit_review():
+    if current_user.email == "admin@abc.com":
+        flash("Admins cannot submit reviews.", "warning")
+        return redirect(url_for('productController.products'))
+
+    product_id = request.form.get('product_id')
+    rating = int(request.form.get('rating'))
+    text = request.form.get('review')
+
+    the_product = Product.getProduct(product_id)
+    if the_product is None:
+        flash("Product not found.", "danger")
+        return redirect(url_for('ordersController.orders_page'))
+
+    existing = Review.getReview(current_user, the_product)
+    Review.addOrUpdate(current_user, the_product, rating, text)
+
+    if existing:
+        flash("Review updated.", "success")
+    else:
+        flash("Review submitted.", "success")
+
+    return redirect(url_for('ordersController.orders_page'))

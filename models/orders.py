@@ -1,8 +1,9 @@
 from __init__ import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class OrderItem(db.EmbeddedDocument):
+    product = db.ReferenceField('Product')   # ← new — links review back to product
     product_name = db.StringField()
     qty = db.IntField()
     special_price = db.FloatField()
@@ -14,7 +15,7 @@ class Order(db.Document):
     meta = {'collection': 'orders'}
     user = db.ReferenceField('User')
     items = db.EmbeddedDocumentListField(OrderItem)
-    checkout_date = db.DateTimeField(default=datetime.utcnow)
+    checkout_date = db.DateTimeField(default=lambda: datetime.now(timezone.utc))
     total = db.FloatField(default=0)
 
     @staticmethod
@@ -26,6 +27,7 @@ class Order(db.Document):
             if not item.product:
                 continue
             order_items.append(OrderItem(
+                product=item.product,
                 product_name=item.product.name,
                 qty=item.qty,
                 special_price=item.product.special_price,

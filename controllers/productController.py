@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template
 from models.product import Product
+from models.review import Review
 
 
 product = Blueprint('productController', __name__)
@@ -15,6 +16,11 @@ def products():
     else:
         all_products = Product.objects(category=selected_category)
 
+    for p in all_products:
+        p.avg_rating = Review.getAverageRating(p)
+        p.review_count = Review.getReviewCount(p)
+        p.newest_review = Review.getNewestReview(p)
+
     categories = Product.objects().distinct("category")
 
     return render_template(
@@ -29,4 +35,8 @@ def products():
 @product.route("/viewProductDetail/<product_id>")
 def viewProductDetail(product_id):
     the_product = Product.getProduct(product_id)
+    if the_product:
+        the_product.avg_rating = Review.getAverageRating(the_product)
+        the_product.review_count = Review.getReviewCount(the_product)
+        the_product.all_reviews = list(Review.getProductReviews(the_product))
     return render_template('productDetail.html', panel="Product Detail", product=the_product)

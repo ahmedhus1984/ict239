@@ -14,15 +14,13 @@
     </div>
   </div>
   <div class="card-body p-0">
-    <table class="table align-middle mb-0">
+    <table class="table table-bordered align-middle mb-0" style="--bs-table-border-color: #333; border-width: 2px;">
       <thead>
         <tr>
           <th>Item</th>
           <th class="text-center">Qty</th>
           <th class="text-center">Line Total</th>
-          <th class="text-center">Rating</th>
-          <th>Review</th>
-          <th class="text-center">Submit</th>
+          <th>Your Review</th>
         </tr>
       </thead>
       <tbody>
@@ -31,21 +29,33 @@
           <td>{{ item.product_name }}</td>
           <td class="text-center">{{ item.qty }}</td>
           <td class="text-center">${{ "%.2f"|format(item.special_price * item.qty) }}</td>
-          <td class="text-center">
-            <select class="form-select form-select-sm" style="width: 70px; margin: auto;">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-            </select>
-          </td>
-          <td>
-            <textarea class="form-control form-control-sm" rows="2" placeholder="Share your feedback"></textarea>
-          </td>
-          <td class="text-center">
-            <button type="button" class="btn btn-danger btn-sm">Add</button>
-          </td>
+
+          {% if item.product %}
+            {% set existing = reviews_map.get(item.product.id|string) %}
+            <td class="p-0">
+              <form action="/orders/review" method="post" class="d-flex align-items-center gap-2 p-2">
+                <input type="hidden" name="product_id" value="{{ item.product.id }}">
+
+                <select name="rating" class="form-select form-select-sm" style="width: 70px;" required>
+                  <option value="">-</option>
+                  {% for n in [1,2,3,4,5] %}
+                  <option value="{{ n }}" {% if existing and existing.rating == n %}selected{% endif %}>{{ n }}</option>
+                  {% endfor %}
+                </select>
+
+                <textarea name="review" class="form-control form-control-sm" rows="1"
+                          placeholder="Share your feedback" required>{% if existing %}{{ existing.text }}{% endif %}</textarea>
+
+                {% if existing %}
+                <button type="submit" class="btn btn-danger btn-sm">Update</button>
+                {% else %}
+                <button type="submit" class="btn btn-danger btn-sm">Add</button>
+                {% endif %}
+              </form>
+            </td>
+          {% else %}
+            <td class="text-center text-muted">Review unavailable</td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>
