@@ -18,7 +18,11 @@
         <small class="text-muted">Usual: <s>${{ "%.2f"|format(product.usual_price) }}</s></small>
       </p>
 
+      {% if product.stock_qty == 0 %}
+      <p class="card-text"><span class="badge bg-danger">Out of Stock</span></p>
+      {% else %}
       <p class="card-text"><strong>Stock:</strong> {{ product.stock_qty }}</p>
+      {% endif %}
 
       {% if product.avg_rating %}
       <p class="mb-1">
@@ -27,7 +31,7 @@
             {% if i <= product.avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
           {% endfor %}
         </span>
-        <strong>{{ product.avg_rating }} / 5</strong>
+        <strong>{{ product.avg_rating }} / 5.0</strong>
         <small class="text-muted">({{ product.review_count }} review{% if product.review_count != 1 %}s{% endif %})</small>
       </p>
       {% endif %}
@@ -64,7 +68,10 @@
 
 <div class="col-12 p-2">
   <div class="d-flex gap-2 align-items-center mb-2">
-    {% if current_user.is_authenticated and current_user.email == "admin@abc.com" %}
+
+    {% if product.stock_qty == 0 %}
+      <span class="btn btn-secondary disabled">Out of Stock</span>
+    {% elif current_user.is_authenticated and current_user.email == "admin@abc.com" %}
       {# admin — no button #}
     {% elif current_user.is_authenticated %}
       <form action="/cart/add" method="post" class="d-inline-flex gap-2 align-items-center">
@@ -75,6 +82,7 @@
     {% else %}
       <a href="/login" class="btn btn-primary text-nowrap">Login to Buy</a>
     {% endif %}
+
   </div>
   <div>
     <a href="/products" class="btn btn-primary text-nowrap">Back to Products</a>

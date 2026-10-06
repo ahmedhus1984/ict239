@@ -69,6 +69,8 @@
                 {% endif %}
 
                 {% if current_user.email == "admin@abc.com" %}
+                <li class="nav-item"><a href="/orders" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i class="fas fa-truck text-light fa-lg me-3"></i>Orders</a></li>
+                <li class="nav-item"><a href="/manageProducts" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i class="fas fa-edit text-light fa-lg me-3"></i>Admin Products</a></li>
                 <li class="nav-item"><a href="/upload" class="nav-link text-white py-3 px-2 mb-2 sidebar-link"><i
                       class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
                 {% else %}

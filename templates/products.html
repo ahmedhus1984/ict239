@@ -60,6 +60,10 @@
         <small class="text-muted">Usual: <s>${{ "%.2f"|format(product.usual_price) }}</s></small>
       </p>
 
+      {% if product.stock_qty == 0 %}
+      <p class="mb-2"><span class="badge bg-danger">Out of Stock</span></p>
+      {% endif %}
+
       {% if product.avg_rating %}
       <div class="mb-1">
         <span class="text-warning">
@@ -67,7 +71,7 @@
             {% if i <= product.avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
           {% endfor %}
         </span>
-        <strong>{{ product.avg_rating }} / 5</strong>
+        <strong>{{ product.avg_rating }} / 5.0</strong>
       </div>
       <small class="text-muted">{{ product.review_count }} review{% if product.review_count != 1 %}s{% endif %}</small>
       {% if product.newest_review %}
@@ -76,9 +80,10 @@
       {% else %}
       <p class="text-muted mb-2">No reviews yet</p>
       {% endif %}
-
       <a href="/viewProductDetail/{{ product.id }}" class="btn btn-outline-danger btn-sm">
-        {% if current_user.is_authenticated and current_user.email != "admin@abc.com" %}
+        {% if product.stock_qty == 0 %}
+        View Details
+        {% elif current_user.is_authenticated and current_user.email != "admin@abc.com" %}
         View to Add to Cart
         {% else %}
         View Details

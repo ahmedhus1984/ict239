@@ -8,6 +8,9 @@
   <div class="card-header d-flex justify-content-between align-items-center">
     <div>
       <strong>Order #{{ order.id }}</strong>
+      {% if current_user.email == "admin@abc.com" and order.user %}
+      <br><small class="text-muted">{{ order.user.email }}</small>
+      {% endif %}
     </div>
     <div>
       <small class="text-muted">{{ order.checkout_date.strftime('%d/%m/%Y %H:%M') }}</small>
@@ -20,7 +23,9 @@
           <th>Item</th>
           <th class="text-center">Qty</th>
           <th class="text-center">Line Total</th>
+          {% if current_user.email != "admin@abc.com" %}
           <th>Your Review</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
@@ -30,31 +35,33 @@
           <td class="text-center">{{ item.qty }}</td>
           <td class="text-center">${{ "%.2f"|format(item.special_price * item.qty) }}</td>
 
-          {% if item.product %}
-            {% set existing = reviews_map.get(item.product.id|string) %}
-            <td class="p-0">
-              <form action="/orders/review" method="post" class="d-flex align-items-center gap-2 p-2">
-                <input type="hidden" name="product_id" value="{{ item.product.id }}">
+          {% if current_user.email != "admin@abc.com" %}
+            {% if item.product %}
+              {% set existing = reviews_map.get(item.product.id|string) %}
+              <td class="p-0">
+                <form action="/orders/review" method="post" class="d-flex align-items-center gap-2 p-2">
+                  <input type="hidden" name="product_id" value="{{ item.product.id }}">
 
-                <select name="rating" class="form-select form-select-sm" style="width: 70px;" required>
-                  <option value="">-</option>
-                  {% for n in [1,2,3,4,5] %}
-                  <option value="{{ n }}" {% if existing and existing.rating == n %}selected{% endif %}>{{ n }}</option>
-                  {% endfor %}
-                </select>
+                  <select name="rating" class="form-select form-select-sm" style="width: 70px;" required>
+                    <option value="">-</option>
+                    {% for n in [1,2,3,4,5] %}
+                    <option value="{{ n }}" {% if existing and existing.rating == n %}selected{% endif %}>{{ n }}</option>
+                    {% endfor %}
+                  </select>
 
-                <textarea name="review" class="form-control form-control-sm" rows="1"
-                          placeholder="Share your feedback" required>{% if existing %}{{ existing.text }}{% endif %}</textarea>
+                  <textarea name="review" class="form-control form-control-sm" rows="1"
+                            placeholder="Share your feedback" required>{% if existing %}{{ existing.text }}{% endif %}</textarea>
 
-                {% if existing %}
-                <button type="submit" class="btn btn-danger btn-sm">Update</button>
-                {% else %}
-                <button type="submit" class="btn btn-danger btn-sm">Add</button>
-                {% endif %}
-              </form>
-            </td>
-          {% else %}
-            <td class="text-center text-muted">Review unavailable</td>
+                  {% if existing %}
+                  <button type="submit" class="btn btn-danger btn-sm">Update</button>
+                  {% else %}
+                  <button type="submit" class="btn btn-danger btn-sm">Add</button>
+                  {% endif %}
+                </form>
+              </td>
+            {% else %}
+              <td class="text-center text-muted">Review unavailable</td>
+            {% endif %}
           {% endif %}
         </tr>
         {% endfor %}

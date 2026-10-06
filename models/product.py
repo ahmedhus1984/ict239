@@ -35,3 +35,15 @@ class Product(db.Document):
             image_url=image_url,
             description=description
         ).save()
+
+    @staticmethod
+    def updateProduct(product_id, special_price, usual_price, stock_qty, description):
+        the_product = Product.getProduct(product_id)
+        if the_product is None:
+            return None
+        the_product.special_price = special_price
+        the_product.usual_price = usual_price
+        the_product.stock_qty = stock_qty
+        the_product.description = description
+        the_product.save()
+        return the_product

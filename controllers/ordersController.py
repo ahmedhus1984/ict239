@@ -51,11 +51,10 @@ def checkout():
 @login_required
 def orders_page():
     if current_user.email == "admin@abc.com":
-        flash("Admins do not have orders.", "warning")
-        return redirect(url_for('productController.products'))
+        user_orders = Order.getAllOrders()
+    else:
+        user_orders = Order.getUserOrders(current_user)
 
-    user_orders = Order.getUserOrders(current_user)
-        # build a map: product_id -> existing review by this user
     reviews_map = {}
     for order in user_orders:
         for item in order.items:
@@ -64,7 +63,7 @@ def orders_page():
                 if key not in reviews_map:
                     reviews_map[key] = Review.getReview(current_user, item.product)
 
-    return render_template('orders.html', panel="Your Orders",
+    return render_template('orders.html', panel="Orders",
                            orders=user_orders, reviews_map=reviews_map)
 
 

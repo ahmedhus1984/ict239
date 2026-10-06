@@ -46,3 +46,7 @@ class Order(db.Document):
     @staticmethod
     def getUserOrders(user):
         return Order.objects(user=user).order_by('-checkout_date')
+
+    @staticmethod
+    def getAllOrders():
+        return Order.objects().order_by('-checkout_date')
