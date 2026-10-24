@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block userDropdown %}
+{% if panel == "Logging BMI 2" %}
+<select  name="parameter" id="selected_parameter" >
+  <option value="all">Select One</option>
+  {% for user in user_list %}
+  <option value="{{user.email}}">{{user.email}}</option>
+  {% endfor %}
+</select>	
+{% endif %}
+<script src="{{ url_for('static', filename='js/log2.js') }}"></script>
+{% endblock %}
+
+{% block mainblock %}
+    <div class="card-header">
+        <h3>BMI Calculator</h3>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid col-sm-12">
+            <form action="/process2" method="post">
+            <!-- <input name="user_email" type="hidden" id="user_email" value=""> -->
+                <div class="form-group row">
+                  <label for="email" class="col-sm-3 col-form-label">Email</label>
+                  <div class="col-sm-5">
+                    <input class="form-control" id="user_email" placeholder="email" name="user_email" required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="weight" class="col-sm-3 col-form-label">Weight</label>
+                  <div class="col-sm-5">
+                    <input class="form-control" id="weight" placeholder="Weight (kg)" name="weight" required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="height" class="col-sm-3 col-form-label">Height</label>
+                  <div class="col-sm-5">
+                    <input class="form-control" id="height" placeholder="Height (cm or m)" name="height" required>
+                  </div>
+                </div>
+                 <div class="form-group row">
+                  <label for="spce" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <input type="radio" id="m" name="unit" value="m" checked>
+                        <label for="meter">m</label>
+                        <input type="radio" id="cm" value="cm" name="unit">
+                        <label for="centimeter">cm</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="space" class="col-sm-3 col-form-label">Date & Time</label>
+                    <div class="col-sm-5">
+                      <input type="datetime-local" class="form-control" id="datetime" name="date" required>
+                    </div>
+                  </div>
+                <div class="form-group row form-check">
+                        <button type="submit" class="offset-sm-3 btn btn-primary">Log BMI</button>
+                </div>
+            
+              </form>
+            </div>
+    </div>
+{% endblock %}
+
