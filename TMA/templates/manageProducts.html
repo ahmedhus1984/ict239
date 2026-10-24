@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block mainblock %}
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th class="text-center">Special Price</th>
+        <th class="text-center">Usual Price</th>
+        <th class="text-center">Stock</th>
+        <th>Description</th>
+        <th class="text-center">Save</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in all_products %}
+      <tr>
+        <td>
+          <img src="{{ product.image_url }}" style="width: 60px;" />
+          <form id="form-{{ product.id }}" action="/manageProducts/update/{{ product.id }}" method="post"></form>
+        </td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category }}</td>
+        <td class="text-center">
+          <input form="form-{{ product.id }}" type="number" name="special_price" class="form-control form-control-sm"
+                 step="0.01" min="0.01" value="{{ product.special_price }}" required>
+        </td>
+        <td class="text-center">
+          <input form="form-{{ product.id }}" type="number" name="usual_price" class="form-control form-control-sm"
+                 step="0.01" min="0.01" value="{{ product.usual_price }}" required>
+        </td>
+        <td class="text-center">
+          <input form="form-{{ product.id }}" type="number" name="stock_qty" class="form-control form-control-sm"
+                 min="0" value="{{ product.stock_qty }}" required>
+        </td>
+        <td>
+          <textarea form="form-{{ product.id }}" name="description" class="form-control form-control-sm"
+                    rows="2" required>{{ product.description }}</textarea>
+        </td>
+        <td class="text-center">
+          <button form="form-{{ product.id }}" type="submit" class="btn btn-outline-danger btn-sm">Update</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
