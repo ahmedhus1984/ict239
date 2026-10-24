@@ -1,4 +1,4 @@
-from app import db
+from __init__ import db
 from models.users import User
 
 # class Bmi_Measurement(db_Document):

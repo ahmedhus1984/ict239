@@ -2,7 +2,7 @@
 
 from flask_login import login_required, current_user
 from flask import render_template, request
-from app import app, db, login_manager
+from __init__ import app, db, login_manager
 
 # Register Blueprint so we can factor routes
 # from bmi import bmi, get_dict_from_csv, insert_reading_data_into_database
