@@ -58,13 +58,18 @@ def bookHotel():
         if the_hotel_to_be_booked is not None:
             try:
                 # TRY TO CREATE THE BOOKING
-                Booking.createBooking(
+                aBooking = Booking.createBooking(
                     check_in_date=check_in_date,
                     check_out_date=check_out_date, 
                     customer=current_user,
                     hotel=the_hotel_to_be_booked,
                     holiday_type=holiday_type
                 )
+
+                # --- ADD THIS LINE ---
+                aBooking.getItinerary()
+                # ---------------------
+
                 flash("Hotel successfully booked!", "success")
                 return redirect(url_for('hotelController.hotels'))
                 
@@ -105,6 +110,10 @@ def book():
                 package=existing_package,
                 holiday_type=holiday_type
             ) 
+
+            # --- ADD THIS LINE ---
+            aBooking.getItinerary()
+            # ---------------------
 
             # Use Python's .replace() method here, not Jinja's |replace
             clean_title = existing_package.title.replace('"', '')
