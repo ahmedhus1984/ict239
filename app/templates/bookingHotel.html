@@ -1,0 +1,49 @@
+{% from "_render_field.html" import render_field %}
+{% extends "base.html" %}
+{% block mainblock %}
+<div class="col-xl-4 col-sm-4 p-2">
+    <div class="card card-common">
+  <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+    <img src="{{ hotel.image_url|replace('"', '') }}" class="img-fluid"/>
+    <a href="#!">
+      <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+    </a>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ hotel.hotel_name|replace('"', '') }}</h5>
+    <p class="card-text">{{ hotel.description|replace('"', '') }}</p>
+    <!-- Changed to match mockup -->
+    <p class="card-text"><strong>Nightly rate:</strong> ${{ hotel.est_nightly_price }}</p>
+  </div>
+</div>
+</div>
+
+<div class="col-xl-6 col-sm-4 p-2">
+    <div class="card card-common">
+    <div class="card-header">
+        <h3>Select This Offer</h3>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <form action="/bookHotel?hotel_name={{ hotel.hotel_name|replace('"', '') }}" method="post">
+                <input name="hotel_name" type="hidden" value='{{ hotel.hotel_name }}'>
+                
+                {{ render_field(form.check_in_date, type="date", placeholder="Enter datetime") }}
+                
+                <!-- Added Check_out_date field -->
+                {{ render_field(form.check_out_date, type="date", placeholder="Enter datetime") }}
+                
+                {{ render_field(form.holiday_type) }}
+                
+                {{ form.hidden_tag() }}
+                
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="/hotels" class="btn btn-primary spa-link">Back</a>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

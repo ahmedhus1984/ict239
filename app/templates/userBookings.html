@@ -1,0 +1,218 @@
+{% from "_render_field.html" import render_field %}
+{% extends "base.html" %}
+
+{% block mainblock %}
+
+{% if bookings|length == 0 %}
+<h3>No booking to Manage</h3>
+{% else %}
+<div style="overflow-x:auto;">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Booking Type</th>
+        <th>Name</th>
+        <th>Holiday Type</th>
+        <th>Check-In Date</th>
+        <th>Check-Out Date</th>
+        <th>Suggested Itinerary</th>
+        <th>Change to Date</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for booking in bookings %}
+      <!-- Check if the booking is in the past -->
+      {% set is_past = booking.check_in_date.date() < now.date() %}
+      
+      <tr>
+        <!-- Hidden forms for this row -->
+        <form id="updateForm-{{ loop.index }}" method="POST" action="/updateBooking"></form>
+        <form id="deleteForm-{{ loop.index }}" method="POST" action="/deleteBooking"></form>
+
+        <td style="width: 10%;">
+          {% if booking.package %}
+            <img src="{{ booking.package.image_url|replace('"', '') }}" class="img-fluid" />
+          {% elif booking.hotel %}
+            <img src="{{ booking.hotel.image_url|replace('"', '') }}" class="img-fluid" />
+          {% endif %}
+        </td>
+        
+        <td>{% if booking.package %} Package {% elif booking.hotel %} Hotel {% endif %}</td>
+
+        <td style="width: 15%;">
+          {% if booking.package %}
+            {{ booking.package.title|replace('"', '') }}
+          {% elif booking.hotel %}
+            {{ booking.hotel.hotel_name|replace('"', '') }}
+          {% endif %}
+        </td>
+
+        <td>{{ booking.holiday_type }}</td>
+        
+        <!-- Check-in Date with Past label -->
+        <td>
+          {{ booking.check_in_date|formatdate }}
+          {% if is_past %}
+            <br><small class="text-muted">Past</small>
+          {% endif %}
+        </td>
+        
+        <td>{{ booking.check_out_date|formatdate if booking.check_out_date else '' }}</td>
+
+        <td>
+          <button class="btn btn-outline-primary btn-sm view-itinerary-btn" data-booking-id="{{ booking.id }}">View Itinerary</button>
+        </td>
+        <!-- Update Form Inputs (Disabled if past) -->
+        <td style="width:15%;">
+          {% if booking.package %}
+            <input type="hidden" value="{{ booking.package.title }}" name="package_title" form="updateForm-{{ loop.index }}">
+          {% elif booking.hotel %}
+            <input type="hidden" value="{{ booking.hotel.hotel_name }}" name="hotel_name" form="updateForm-{{ loop.index }}">
+          {% endif %}
+          <input type="hidden" value="{{ booking.check_in_date }}" name="old_check_in_date" form="updateForm-{{ loop.index }}">
+          
+          <input type="date" class="form-control form-control-sm" id="check_in_date" name="check_in_date" form="updateForm-{{ loop.index }}" required {% if is_past %}disabled{% endif %}>
+        </td>
+        
+        <!-- Check-Out Date (Only for hotels, disabled if past) -->
+        <td style="width:15%;">
+          {% if booking.hotel %}
+            <input type="date" class="form-control form-control-sm" id="check_out_date" name="check_out_date" form="updateForm-{{ loop.index }}" {% if is_past %}disabled{% endif %}>
+          {% endif %}
+        </td>
+
+        <!-- Update Button (Disabled if past) -->
+        <td>
+          <button type="submit" class="btn btn-primary btn-sm" form="updateForm-{{ loop.index }}" {% if is_past %}disabled{% endif %}>Update</button>
+        </td>
+
+        <!-- Delete Form Inputs (Always enabled) -->
+        <td>
+          {% if booking.package %}
+            <input type="hidden" value="{{ booking.package.title }}" name="package_title" form="deleteForm-{{ loop.index }}">
+          {% elif booking.hotel %}
+            <input type="hidden" value="{{ booking.hotel.hotel_name }}" name="hotel_name" form="deleteForm-{{ loop.index }}">
+          {% endif %}
+          <input type="hidden" value="{{ booking.check_in_date }}" name="old_check_in_date" form="deleteForm-{{ loop.index }}">
+          <button type="submit" class="btn btn-primary btn-sm" form="deleteForm-{{ loop.index }}" onclick="return confirm('Are you sure you want to delete booking?');">Delete</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<!-- Itinerary Modal -->
+<div class="modal fade" id="itineraryModal" tabindex="-1" aria-labelledby="itineraryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="itineraryModalLabel">Suggested Itinerary</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="itineraryModalBody">
+        <!-- Itinerary will be injected here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const viewButtons = document.querySelectorAll('.view-itinerary-btn');
+    
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const bookingId = this.getAttribute('data-booking-id');
+            const modalBody = document.getElementById('itineraryModalBody');
+            
+            modalBody.innerHTML = '<p>Loading itinerary...</p>';
+            
+            fetch(`/getItinerary/${bookingId}`)
+                .then(response => response.json())
+                .then(data => {
+                    modalBody.innerHTML = ''; 
+                    
+                    if (data.error) {
+                        modalBody.innerHTML = `<p class="text-danger">${data.error}</p>`;
+                        return;
+                    }
+                    if (data.length === 0) {
+                        modalBody.innerHTML = '<p>No activities found for this itinerary.</p>';
+                        return;
+                    }
+
+                    data.forEach(day => {
+                        let dayHtml = `<h5 class="mt-4 mb-3 text-primary fw-bold">Day ${day.day}</h5><div class="row">`;
+                        
+                        if (day.morning) dayHtml += buildActivityCard(day.morning, 'Morning', 'warning', '9:00 AM - 1:00 PM');
+                        if (day.afternoon) dayHtml += buildActivityCard(day.afternoon, 'Afternoon', 'primary', '1:00 PM - 7:00 PM');
+                        if (day.evening) dayHtml += buildActivityCard(day.evening, 'Evening', 'dark', '7:00 PM - 11:00 PM');
+                        
+                        dayHtml += `</div>`;
+                        modalBody.innerHTML += dayHtml;
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    modalBody.innerHTML = '<p class="text-danger">Error loading itinerary.</p>';
+                });
+
+            const modal = new bootstrap.Modal(document.getElementById('itineraryModal'));
+            modal.show();
+        });
+    });
+
+    // Helper function to build the HTML for a single activity card
+    function buildActivityCard(slotData, timeLabel, badgeColor, timeRange) {
+        const activity = slotData.chosen;
+        const alternatives = slotData.alternatives;
+        
+        // Safely handle missing fields
+        const imageUrl = activity.image_url ? activity.image_url.replace(/"/g, '') : 'https://via.placeholder.com/150';
+        const name = activity.name ? activity.name.replace(/"/g, '') : 'Unknown Activity';
+        const address = activity.address ? activity.address.replace(/"/g, '') : 'N/A';
+        const neighborhood = activity.neighborhood ? activity.neighborhood.replace(/"/g, '') : 'N/A';
+        const details = activity.details ? activity.details.replace(/"/g, '') : '';
+        
+        // Build alternatives HTML
+        let altHtml = '';
+        if (alternatives && alternatives.length > 0) {
+            altHtml += `<hr class="my-2"><small class="text-muted fw-bold">Alternatives:</small><div class="mt-1 d-flex flex-wrap gap-1">`;
+            alternatives.forEach(alt => {
+                const altName = alt.name ? alt.name.replace(/"/g, '') : 'Unknown';
+                altHtml += `<span class="badge bg-light text-dark border">${altName}</span>`;
+            });
+            altHtml += `</div>`;
+        }
+
+        return `
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm border-0 bg-light">
+                    <img src="${imageUrl}" class="card-img-top" style="height: 120px; object-fit: cover;" alt="${name}">
+                    <div class="card-body p-3">
+                        <span class="badge bg-${badgeColor} mb-2 w-100 text-start">${timeLabel} - ${timeRange}</span>
+                        <h6 class="card-title mb-2 fw-bold">${name}</h6>
+                        <p class="card-text text-muted mb-1" style="font-size: 0.8rem; line-height: 1.2;">
+                            <i class="fas fa-map-marker-alt"></i> ${address}<br>
+                            <i class="fas fa-map-marker-alt"></i> ${neighborhood}<br>
+                            <i class="fas fa-clock"></i> Open ${activity.opening_time} - ${activity.closing_time}
+                        </p>
+                        <p class="card-text mt-2" style="font-size: 0.8rem;">
+                            Details:<br>${details}
+                        </p>
+                        ${altHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+});
+</script>
+
+
+{% endblock %}

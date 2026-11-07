@@ -1,0 +1,18 @@
+{% macro render_field(field) %}
+
+<div class="form-group mb-3">
+    <label for="{{ field.name }}"><h3>{{ field.label.text.capitalize() }}</h3></label>
+    
+    {% if field.type == 'SelectField' %}
+        {{ field(class_='form-select', **kwargs)|safe }}
+    {% else %}
+        {{ field(class_='form-control', **kwargs)|safe }}
+    {% endif %}
+    
+    <ul class="list-unstyled"> 
+        {% for error in field.errors %}
+        <li style="color:red;">{{ error }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}

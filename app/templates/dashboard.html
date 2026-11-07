@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block mainblock %}
+
+
+
+<!-- Top Row: Stat Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card card-common p-3">
+            <small class="text-muted text-uppercase">Total Bookings</small>
+            <h3 class="fw-bold mb-0" id="stat-total-bookings">0</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-common p-3">
+            <small class="text-muted text-uppercase">Upcoming Bookings</small>
+            <h3 class="fw-bold mb-0" id="stat-upcoming-bookings">0</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-common p-3">
+            <small class="text-muted text-uppercase">Total Revenue</small>
+            <h3 class="fw-bold mb-0" id="stat-total-revenue">$0</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-common p-3">
+            <small class="text-muted text-uppercase">Hotels with Bookings</small>
+            <h3 class="fw-bold mb-0" id="stat-hotels-booked">0</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Middle Row: Line and Bar Charts -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Bookings by Month</h6>
+            <div style="height: 250px;">
+                <canvas id="bookingsByMonthChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Revenue by Month</h6>
+            <div style="height: 250px;">
+                <canvas id="revenueByMonthChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Third Row: Doughnut and Pie Charts -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Booking Type Mix</h6>
+            <div style="height: 250px;">
+                <canvas id="bookingTypeMixChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Holiday Type Mix</h6>
+            <div style="height: 250px;">
+                <canvas id="holidayTypeMixChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Row: Horizontal Bar Charts -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Top Hotels by Bookings</h6>
+            <div style="height: 300px;">
+                <canvas id="topHotelsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Bookings by Neighborhood</h6>
+            <div style="height: 300px;">
+                <canvas id="neighborhoodChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Width Row: Most Suggested Activities -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-common p-3">
+            <h6 class="text-muted">Most Suggested Activities in Itineraries</h6>
+            <div style="height: 350px;">
+                <canvas id="activitiesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+{% endblock %}

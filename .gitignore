@@ -1,0 +1,11 @@
+__pycache__/
+venv/
+env/
+ENV/
+.venv/
+__pycache__/
+*.pyc
+recordings/
+*.zip
+*.docx
+tma_PLEASE_IGNORE/

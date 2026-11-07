@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="title icon" href="{{ url_for('static', filename='img/title-img.png')}}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
+    integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
+    crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css')}}">
+  <!-- Load Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Admin Dashboard</title>
+</head>
+
+<body>
+
+
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-md navbar-light">
+    <button class="navbar-toggler ms-auto mb-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xl-2 col-lg-3 col-md-4 sidebar fixed-top">
+            <a href="#" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">Staycation
+              Portal</a>
+            
+            {% if current_user.is_authenticated %}
+            <div class="bottom-border text-center pb-3 mb-3">
+              {% if current_user.isAdmin %}
+              <img src="{{ url_for('static', filename='img/admin.jpeg')}}" width="60" height="60" class="rounded-circle mb-2 object-fit-cover">
+              {% elif current_user.avatar == "" %}
+              <img src="{{ url_for('static', filename='img/avatar/default-min.jpg')}}" width="60" height="60"
+                class="rounded-circle mb-2 object-fit-cover" id="userAvatar">
+              {% else %}
+              <img src="{{ url_for('static', filename='img/avatar/' + current_user.avatar)}}" width="60" height="60"
+                class="rounded-circle mb-2 object-fit-cover" id="userAvatar">
+              {% endif %}
+              <h6 class="text-white mb-0">{{ current_user.name }}</h6>
+              <small class="text-muted text-break px-2">{{ current_user.email }}</small>
+            </div>
+            {% endif %}
+
+            <ul class="navbar-nav flex-column mt-4">
+              {% if not current_user.is_authenticated %}
+              <li class="nav-item"><a href="/login" id="link-login" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-home text-light fa-lg me-3"></i>Login</a></li>
+              <li class="nav-item"><a href="/register" id="link-register" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-user text-light fa-lg me-3"></i>Register</a></li>
+              {% endif %}
+              
+              <li class="nav-item"><a href="/" id="link-explore" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-binoculars text-light fa-lg me-3"></i>Explore</a></li>
+
+              {% if current_user.isAdmin %}
+              <li class="nav-item"><a href="/trend_chart" id="link-dashboard" class="nav-link text-white p-3 mb-2 sidebar-link spa-link"><i
+                    class="fas fa-chart-area text-light fa-lg me-3"></i>Dashboard</a></li>
+              <li class="nav-item"><a href="/upload" id="link-upload" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-cloud-upload-alt text-light fa-lg me-3"></i>Upload</a></li>
+
+              {% else %}
+              {% if current_user.is_authenticated %}
+              <li class="nav-item"><a href="/manageBookings" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-calendar text-light fa-lg me-3"></i>Manage Bookings</a></li>
+              <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-smile text-light fa-lg me-3"></i>Change Avatar</a></li>
+              {% endif %}
+              {% endif %}
+
+            </ul>
+          </div>
+          <!-- end of sidebar -->
+
+          <!-- top-nav -->
+          <div class="col-xl-10 col-lg-9 col-md-8 ms-auto bg-info fixed-top py-2 top-navbar">
+            <div class="row align-items-center">
+              <div class="col-md-4">
+                <h4 class="text-light text-uppercase mb-0" id="page-title"></h4>
+              </div>
+
+              {% if current_user.is_authenticated %}
+              <div class="col-md-8">
+                <ul class="navbar-nav">
+                  <li class="nav-item ms-auto"><a href="#" class="nav-link" data-bs-toggle="modal"
+                      data-bs-target="#sign-out"><i class="fas fa-sign-out-alt fa-lg"></i></a></li>
+                </ul>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          <!-- end of top-nav -->
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- end of navbar -->
+
+  <!-- modal -->
+  <div class="modal fade" id="sign-out">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Want to leave?</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Press logout to leave
+        </div>
+        <div class="modal-footer">
+          <form action='/logout' method='GET'>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Stay Here</button>
+            <button type="submit" class="btn btn-danger" id="logout">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end of modal -->
+
+   <!-- cards -->
+  <section>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-10 col-lg-9 col-md-8 ms-auto">
+
+          <!-- ADDED: Flash Messages Container for SPA -->
+          <div id="flash-messages" class="ms-md-3 mt-3">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          </div>
+
+          <!-- Dynamic SPA Content Area -->
+          <div class="row ms-md-3" id="main-content">
+
+          <!-- NEW: Persistent Navigation Buttons -->
+          <div class="row pt-md-5 ms-md-3 mt-md-3">
+            <div class="col-12 mt-4 mb-2">
+              {% if request.path in ['/', '/packages', '/hotels', '/attractions'] or '/viewPackageDetail' in request.path %} <!-- this checks for the pattern, '/viewPackageDetail' inside the returned string value from request.path -->
+                <a href="/packages" id="btn-packages" class="btn btn-outline-primary spa-link">Packages</a>
+                <a href="/hotels" id="btn-hotels" class="btn btn-outline-primary spa-link">Hotels</a>
+                <a href="/attractions" id="btn-attractions" class="btn btn-outline-primary spa-link">Attractions</a>
+              {% endif %}
+            </div>
+          </div>
+
+
+
+            <div class="row mb-5">
+              {% block mainblock %}
+              {% endblock %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end of cards -->
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Listen for clicks on links that have the class "spa-link"
+      document.body.addEventListener("click", (e) => {
+        const link = e.target.closest('.spa-link');
+        
+        if (link) {
+          e.preventDefault(); // Stop the full page reload
+          
+          const url = link.getAttribute('href');
+          loadPage(url);
+        }
+      });
+
+      // 2. Fetch the new page and swap the content
+      async function loadPage(url) {
+        try {
+          const response = await fetch(url);
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // Get the new content and the container
+          const newContent = doc.getElementById('main-content').innerHTML;
+          const mainContentDiv = document.getElementById('main-content');
+          
+          // 1. Inject the HTML
+          mainContentDiv.innerHTML = newContent;
+          
+          // 2. THE FIX: Find any <script> tags and execute them
+          const scripts = mainContentDiv.querySelectorAll('script');
+          scripts.forEach(oldScript => {
+              const newScript = document.createElement('script');
+              // Copy attributes (like the src URL)
+              Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+              // Copy inline code if any
+              newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+              // Replace the dead tag with the live one
+              oldScript.parentNode.replaceChild(newScript, oldScript);
+          });
+
+          // Update Flash Messages
+          const newFlashes = doc.getElementById('flash-messages').innerHTML;
+          document.getElementById('flash-messages').innerHTML = newFlashes;
+
+          // Update Title
+          let newTitle = "null";
+          if (url.includes('/login')) newTitle = "LOGIN";
+          if (url.includes('/register')) newTitle = "REGISTER";
+          if (url.includes('/packages')) newTitle = "PACKAGES";
+          if (url.includes('/hotels')) newTitle = "HOTELS";
+          if (url.includes('/attraction')) newTitle = "ATTRACTIONS";
+          if (url.includes('/viewPackageDetail')) newTitle = "PACKAGE DETAIL";
+          if (url.includes('/manageBookings')) newTitle = "MANAGE BOOKINGS";
+          if (url.includes('/changeAvatar')) newTitle = "CHANGE AVATAR";
+          if (url.includes('/trend_chart')) newTitle = "DASHBOARD";
+          if (url.includes('/view')) newTitle = "BOOK PACKAGE";
+          if (url.includes('/bookHotel')) newTitle = "BOOK HOTEL";
+          if (url === '/' || url === 'http://127.0.0.1:5000/') newTitle = "EXPLORE";
+          
+          document.getElementById('page-title').innerText = newTitle;
+          history.pushState(null, '', url);
+          updateActiveButton(url);
+          
+        } catch (error) {
+          console.error("Error loading page:", error);
+        }
+      }
+
+      // 3. Function to highlight the active button
+      function updateActiveButton(url) {
+        // First, reset all buttons to the outline style
+        document.querySelectorAll('.spa-link').forEach(btn => {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline-primary');
+        });
+
+        // Then, highlight only the one that matches the current URL
+        if (url.includes('/packages')) {
+          const btn = document.getElementById('btn-packages');
+          if (btn) { btn.classList.remove('btn-outline-primary'); btn.classList.add('btn-primary'); }
+        } else if (url.includes('/hotels')) {
+          const btn = document.getElementById('btn-hotels');
+          if (btn) { btn.classList.remove('btn-outline-primary'); btn.classList.add('btn-primary'); }
+        } else if (url.includes('/attractions')) {
+          const btn = document.getElementById('btn-attractions');
+          if (btn) { btn.classList.remove('btn-outline-primary'); btn.classList.add('btn-primary'); }
+        }
+      }
+
+      // 4. Force the title on initial load (when you refresh the page)
+      let currentTitle = "null";
+      if (window.location.pathname.includes('/')) currentTitle = "EXPLORE";
+      if (window.location.pathname.includes('/login')) currentTitle = "LOGIN";
+      if (window.location.pathname.includes('/register')) currentTitle = "REGISTER";
+      if (window.location.pathname.includes('/packages')) currentTitle = "PACKAGES";
+      if (window.location.pathname.includes('/hotels')) currentTitle = "HOTELS";
+      if (window.location.pathname.includes('/attraction')) currentTitle = "ATTRACTIONS";
+      if (window.location.pathname.includes('/viewPackageDetail')) currentTitle = "PACKAGE DETAIL";
+      if (window.location.pathname.includes('/manageBookings')) currentTitle = "MANAGE BOOKINGS";
+      if (window.location.pathname.includes('/changeAvatar')) currentTitle = "CHANGE AVATAR";
+      if (window.location.pathname.includes('/trend_chart')) currentTitle = "DASHBOARD";
+      if (window.location.pathname.includes('/view')) currentTitle = "BOOK PACKAGE";
+      if (window.location.pathname.includes('/bookHotel')) currentTitle = "BOOK HOTEL";
+      
+      document.getElementById('page-title').innerText = currentTitle;
+
+      // 5. Set the correct active button on initial page load
+      updateActiveButton(window.location.pathname);
+    });
+  </script>
+</body>
+
+</html>

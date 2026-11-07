@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block mainblock %}
+
+{% for attraction in all_attractions %}
+<div class="col-xl-4 col-md-6 col-sm-12 p-2">
+  <div class="card card-common h-100">
+    
+    <!-- Image -->
+    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+      <img src="{{ attraction.image_url|replace('"', '') }}" class="img-fluid" style="width: 100%; height: 200px; object-fit: cover;" />
+      <a href="#!">
+        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+      </a>
+    </div>
+
+    <!-- Details -->
+    <div class="card-body">
+      <h5 class="card-title">{{ attraction.name|replace('"', '') }}</h5>
+      
+      <p class="card-text mb-1">
+        <strong>Category:</strong> {{ attraction.category|replace('"', '') }}<br>
+        <strong>Area:</strong> {{ attraction.neighborhood|replace('"', '') }}<br>
+        <strong>Address:</strong> {{ attraction.address|replace('"', '') }}<br>
+        <strong>Details:</strong> {{ attraction.details|replace('"', '') }}<br>
+        <strong>Hours:</strong> {{ attraction.opening_time }} - {{ attraction.closing_time }}<br>
+        
+        <!-- Conditional fields -->
+        {% if attraction.cost_range %}
+        <strong>Cost:</strong> {{ attraction.cost_range|replace('"', '') }}<br>
+        {% endif %}
+        
+        {% if attraction.is_free %}
+        <strong>Entry:</strong> <span class="text-success">Free</span><br>
+        {% endif %}
+        
+        {% if attraction.michelin_award %}
+        <strong>Award:</strong> <span class="text-warning">{{ attraction.michelin_award|replace('"', '') }}</span><br>
+        {% endif %}
+        
+        {% if attraction.signature_dish %}
+        <strong>Must Try:</strong> {{ attraction.signature_dish|replace('"', '') }}<br>
+        {% endif %}
+        
+        {% if attraction.time_slot %}
+        <strong>Time Slots:</strong> {{ attraction.time_slot|join(', ') }}
+        {% endif %}
+      </p>
+    </div>
+
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

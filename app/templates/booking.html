@@ -1,0 +1,49 @@
+{% from "_render_field.html" import render_field %}
+{% extends "base.html" %}
+{% block mainblock %}
+<div class="col-xl-4 col-sm-4 p-2">
+    <div class="card card-common">
+  <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+    <img src="{{ package.image_url|replace('"', '') }}" class="img-fluid"/>
+    <a href="#!">
+      <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+    </a>
+  </div>
+  <div class="card-body">
+    <!-- Changed to show Package Title and Package Price -->
+    <h5 class="card-title">{{ package.title|replace('"', '') }}</h5>
+    <p class="card-text">{{ package.description|replace('"', '') }}</p>
+    <p class="card-text"><strong>Package price:</strong> ${{ package.packageCost()|formatmoney }}</p>
+  </div>
+</div>
+</div>
+
+<div class="col-xl-6 col-sm-4 p-2">
+    <div class="card card-common">
+    <div class="card-header">
+        <h3>Select This Offer</h3>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <form action="/book" method="post">
+                <!-- Keep the hidden hotel_name so the backend can find the package -->
+                <input name="hotel_name" type="hidden" value='{{ package.hotel_name }}'>
+                
+                {{ render_field(form.check_in_date, type="date", placeholder="Enter datetime") }}
+                
+                <!-- Added the Holiday Type field -->
+                {{ render_field(form.holiday_type) }}
+                
+                {{ form.hidden_tag() }}
+                
+                <!-- Added the Back and Submit buttons side by side -->
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="/packages" class="btn btn-primary spa-link">Back</a>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

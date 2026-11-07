@@ -1,0 +1,48 @@
+{% from "_render_field.html" import render_field %}
+{% extends "base.html" %}
+{% block mainblock %}
+
+{% if package %}
+
+<div class="col-xl-5 col-sm-6 p-2">
+  <div class="card card-common h-100">
+    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+      <img src="{{ package.image_url|replace('"', '') }}" class="img-fluid" style="width: 100%; height: 250px; object-fit: cover;" />
+      <a href="#!">
+        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+      </a>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title fw-bold">{{ package.hotel_name|replace('"', '') }}</h5>
+      
+      <p class="card-text mb-1">
+        <strong>Area:</strong> {{ package.neighborhood|replace('"', '') }}<br>
+        <strong>Address:</strong> {{ package.address|replace('"', '') }}<br>
+        <strong>Hotel Class:</strong> {{ package.hotel_class|replace('"', '') }}<br>
+        <strong>Description:</strong> {{ package.description|replace('"', '') }}
+      </p>
+      
+      <p class="card-text mb-1 mt-2">
+        <strong>Nights:</strong> {{ package.duration }} nights<br>
+        <strong>Package Cost:</strong> ${{ package.packageCost()|formatmoney }}<br>
+        <strong class="text-success">Discount:</strong> <span class="text-success">{{ package.discount|int }}% off the hotel rate</span><br>
+        <strong>Was:</strong> <s>${{ package.original_price|formatmoney }}</s><br>
+        <strong>Estimated Nightly Price:</strong> ${{ package.est_nightly_price|formatmoney }}
+      </p>
+      
+      <div class="mt-3">
+        <a href="/packages" class="btn btn-primary spa-link">Back to Packages</a>
+        <a href="/view?hotel_name={{ package.hotel_name|replace('"', '') }}" class="btn btn-primary spa-link">Book</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+<div class="alert alert-danger mt-4">Package not found.</div>
+<a href="/packages" class="btn btn-primary spa-link">Back to Packages</a>
+
+{% endif %}
+
+{% endblock %}

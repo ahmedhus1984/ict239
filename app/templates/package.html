@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block mainblock %}
+
+{% for package in all_packages %}
+<div class="col-xl-4 col-md-6 col-sm-12 p-2">
+  <div class="card card-common h-100">
+    
+    <!-- Image -->
+    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+      <img src="{{ package.image_url|replace('"', '') }}" class="img-fluid" style="width: 100%; height: 200px; object-fit: cover;" />
+      <a href="#!">
+        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+      </a>
+    </div>
+
+    <!-- Details -->
+    <div class="card-body">
+      <h5 class="card-title">{{ package.title|replace('"', '') }}</h5>
+      
+      <p class="card-text mb-1">
+        <strong>Area:</strong> {{ package.neighborhood|replace('"', '') }}<br>
+        <strong>Hotel Class:</strong> {{ package.hotel_class|replace('"', '') }}<br>
+        <strong>Package Cost:</strong> ${{ package.packageCost()|formatmoney }}
+      </p>
+      
+      <p class="card-text">
+        <span class="text-success"><strong>Discount:</strong> {{ package.discount|int }}% off</span><br>
+        <span><strong>Was:</strong> <s>${{ package.original_price|formatmoney }}</s></span>
+      </p>
+
+      <!-- Buttons -->
+      <a href="/viewPackageDetail/{{ package.hotel_name }}" class="btn btn-primary">Details</a>
+      <a href="/view?hotel_name={{ package.hotel_name|replace('"', '') }}" class="btn btn-primary">Book</a>
+    </div>
+
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

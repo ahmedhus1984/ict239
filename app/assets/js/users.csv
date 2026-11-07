@@ -1,0 +1,5 @@
+email,password,name,isAdmin
+admin@gmail.com,12345,admin,1
+ahussein@gmail.com,12345,ahmed hussein,1
+ppoh@abc.com,12345,peter poh,0
+mchan@abc.com,12345,mary chan,0

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block mainblock %}
+
+{% for hotel in all_hotels %}
+<div class="col-xl-4 col-md-6 col-sm-12 p-2">
+  <div class="card card-common h-100">
+    
+    <!-- Image -->
+    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+      <img src="{{ hotel.image_url|replace('"', '') }}" class="img-fluid" style="width: 100%; height: 200px; object-fit: cover;" />
+      <a href="#!">
+        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+      </a>
+    </div>
+
+    <!-- Details -->
+    <div class="card-body">
+      <h5 class="card-title">{{ hotel.hotel_name|replace('"', '') }}</h5>
+      
+      <p class="card-text mb-1">
+        <strong>Area:</strong> {{ hotel.neighborhood|replace('"', '') }}<br>
+        <strong>Address:</strong> {{ hotel.address|replace('"', '') }}<br>
+        <strong>Class:</strong> {{ hotel.hotel_class|replace('"', '') }}<br>
+
+        {% if hotel.amenities %}
+        <strong>Amenities:</strong> {{ hotel.amenities|join(', ') }}
+        {% endif %}
+        <br>
+        <strong>Nightly:</strong> ${{ hotel.est_nightly_price }}<br>
+        <strong>Description:</strong> {{ hotel.description|replace('"', '') }}<br>
+      </p>
+      <!-- Added Buttons Here -->
+      <div class="mt-auto pt-3">
+          <a href="/bookHotel?hotel_name={{ hotel.hotel_name|replace('"', '') }}" class="btn btn-primary">Book</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}
